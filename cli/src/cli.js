@@ -12,10 +12,16 @@ cli
   .delimiter(cli.chalk['yellow']('ftd~$'))
 
 cli
-  .mode('connect <username>')
+  .mode('connect <username> [host] [port]')
   .delimiter(cli.chalk['green']('connected>'))
   .init(function (args, callback) {
     username = args.username
+    let host = args.host
+    let port = args.port
+    if (host === undefined || port === undefined) {
+      host = 'localhost'
+      port = 8080
+    }
     server = connect({ host: 'localhost', port: 8080 }, () => {
       server.write(new Message({ username, command: 'connect' }).toJSON() + '\n')
       callback()
@@ -36,6 +42,12 @@ cli
     if (command === 'disconnect') {
       server.end(new Message({ username, command }).toJSON() + '\n')
     } else if (command === 'echo') {
+      server.write(new Message({ username, command, contents }).toJSON() + '\n')
+    } else if (command === 'broadcast') {
+      server.write(new Message({ username, command, contents }).toJSON() + '\n')
+    } else if (command === 'whisper') {
+      server.write(new Message({ username, command, contents }).toJSON() + '\n')
+    } else if (command === 'users') {
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
     } else {
       this.log(`Command <${command}> was not recognized`)

@@ -48,6 +48,15 @@ public class ClientHandler implements Runnable {
 						writer.write(response);
 						writer.flush();
 						break;
+					case "broadcast":
+						// TODO
+						break;
+					case "whisper":
+						// TODO
+						break;
+					case "users":
+						// TODO
+						break;
 				}
 			}
 

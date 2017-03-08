@@ -5,7 +5,19 @@ public class Message {
 	private String username;
 	private String command;
 	private String contents;
+	private String timeStamp;
 
+	public Message() {
+
+	}
+	
+	public Message(String username, String command, String contents, String timeStamp) {
+		this.username = username;
+		this.command = command;
+		this.contents = contents;
+		this.timeStamp = timeStamp;
+	}
+	
 	public String getUsername() {
 		return username;
 	}
@@ -28,6 +40,14 @@ public class Message {
 
 	public void setContents(String contents) {
 		this.contents = contents;
+	}
+	
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
 	}
 
 }
