@@ -3,6 +3,10 @@ package com.cooksys.assessment.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
@@ -13,6 +17,7 @@ public class Server implements Runnable {
 	
 	private int port;
 	private ExecutorService executor;
+	private Set<ClientHandler> handlers = new HashSet<>();
 	
 	public Server(int port, ExecutorService executor) {
 		super();
@@ -27,12 +32,17 @@ public class Server implements Runnable {
 			ss = new ServerSocket(this.port);
 			while (true) {
 				Socket socket = ss.accept();
-				ClientHandler handler = new ClientHandler(socket);
+				ClientHandler handler = new ClientHandler(socket, this);
 				executor.execute(handler);
-			}
+                handlers.add(handler);
+            }
 		} catch (IOException e) {
 			log.error("Something went wrong :/", e);
 		}
 	}
+
+	public Set<ClientHandler> getHandlers() {
+	    return this.handlers;
+    }
 
 }

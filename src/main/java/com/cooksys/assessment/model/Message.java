@@ -1,19 +1,23 @@
 package com.cooksys.assessment.model;
 
+import com.sun.istack.internal.Nullable;
+
 public class Message {
 
-	private String username;
-	private String command;
-	private String contents;
-	private String timeStamp;
+	private String username = "";
+	private String command = "";
+	private String addressee = "";
+	private String contents = "";
+	private String timeStamp = "";
 
 	public Message() {
-
+		// empty constructor for jackson
 	}
 	
-	public Message(String username, String command, String contents, String timeStamp) {
+	public Message(String username, String command, String addressee, String contents, String timeStamp) {
 		this.username = username;
 		this.command = command;
+		this.addressee = addressee;
 		this.contents = contents;
 		this.timeStamp = timeStamp;
 	}
@@ -34,6 +38,14 @@ public class Message {
 		this.command = command;
 	}
 
+    public String getAddressee() {
+        return this.addressee;
+    }
+
+    public void setAddressee(String addressee) {
+        this.addressee = addressee;
+    }
+
 	public String getContents() {
 		return contents;
 	}
@@ -49,5 +61,4 @@ public class Message {
 	public void setTimeStamp(String timeStamp) {
 		this.timeStamp = timeStamp;
 	}
-
 }
