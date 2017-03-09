@@ -34,19 +34,19 @@ cli
           this.log(cli.chalk['yellow'](mess.toString()))
           break
         case 'disconnect':
-          this.log(cli.chalk['red'](mess.toString()))
-          break
-        case 'echo':
-          this.log(cli.chalk['red'](mess.toString()))
-          break
-        case 'broadcast':
-          this.log(cli.chalk['green'](mess.toString()))
-          break
-        case '@':
           this.log(cli.chalk['yellow'](mess.toString()))
           break
-        case 'users':
+        case 'echo':
+          this.log(cli.chalk['gray'](mess.toString()))
+          break
+        case 'broadcast':
           this.log(cli.chalk['red'](mess.toString()))
+          break
+        case '@':
+          this.log(cli.chalk['magenta'](mess.toString()))
+          break
+        case 'users':
+          this.log(cli.chalk['white'](mess.toString()))
           break
         default:
           this.log('something went wrong!')
@@ -71,7 +71,6 @@ cli
     } else if (command === 'users') {
       server.write(new Message({ username, command }).toJSON() + '\n')
     } else if (command.startsWith('@')) {
-      console.log(command)
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
     } else {
       this.log(`Command <${command}> was not recognized`)

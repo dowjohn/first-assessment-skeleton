@@ -3,11 +3,11 @@ export class Message {
     return new Message(JSON.parse(buffer.toString()))
   }
 
-  constructor ({ username, command, contents }) {
+  constructor ({ username, command, contents, timeStamp }) {
     this.username = username
     this.command = command
     this.contents = contents
-    this.timeStamp = ''
+    this.timeStamp = timeStamp
   }
 
   toJSON () {

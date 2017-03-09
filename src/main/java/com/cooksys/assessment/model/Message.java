@@ -17,13 +17,11 @@ public class Message {
 		// empty constructor for jackson
 	}
 	
-	public Message(String username, String command, String contents, String timeStamp) {
+	public Message(String username, String command, String contents) {
 		this.username = username;
 		this.command = command;
 		this.contents = contents;
-		DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-		Date date = new Date();
-		this.timeStamp = df.format(date);
+		setTimeStamp();
 	}
 	
 	public String getUsername() {
@@ -70,7 +68,10 @@ public class Message {
 		return timeStamp;
 	}
 
-	public void setTimeStamp(String timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setTimeStamp() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+		Date date = new Date();
+		this.timeStamp = df.format(date).toString();
+		System.out.println(getTimeStamp());
 	}
 }

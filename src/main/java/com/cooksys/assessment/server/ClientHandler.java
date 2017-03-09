@@ -50,6 +50,7 @@ public class ClientHandler implements Runnable {
                         Message connectMessage = new Message();
                         connectMessage.setCommand(message.getCommand());
                         connectMessage.setUsername(message.getUsername());
+                        connectMessage.setTimeStamp();
                         for (ClientHandler handler : this.getServer().getHandlers()) {
                             handler.messageUser(connectMessage);
                         }
@@ -65,9 +66,7 @@ public class ClientHandler implements Runnable {
 						this.socket.close();
 						break;
 					case "echo":
-						String response = mapper.writeValueAsString(message);
-						writer.write(response);
-						writer.flush();
+						messageUser(message);
 						break;
 					case "broadcast":
                         Set<ClientHandler> momoHandlers = this.getServer().getHandlers();
@@ -85,7 +84,6 @@ public class ClientHandler implements Runnable {
 						break;
 					case "users":
                         Message allUsersList = new Message();
-                        allUsersList.setTimeStamp(message.getTimeStamp());
                         StringBuilder builder = new StringBuilder();
                         for (ClientHandler handler : this.getServer().getHandlers()) {
                             builder.append("\n");
@@ -105,6 +103,7 @@ public class ClientHandler implements Runnable {
 
 	private void messageUser(Message message) throws JsonProcessingException {
 	    log.info("Got to messageUser");
+	    message.setTimeStamp();
         String response = mapper.writeValueAsString(message);
         writer.write(response);
         writer.flush();
