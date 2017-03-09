@@ -81,6 +81,7 @@ cli
       commando = command
       server.write(new Message({ username, command }).toJSON() + '\n')
     } else if (command.startsWith('@')) {
+      commando = command
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
     } else if (commando !== undefined) {
       if (commando === 'echo' ||
@@ -91,6 +92,8 @@ cli
         command = commando
         let messy = new Message({ username, command, contents })
         server.write(messy.toJSON() + '\n')
+      } else {
+        this.log(`Command <${command}> was not recognized`)
       }
     } else {
       this.log(`Command <${command}> was not recognized`)
