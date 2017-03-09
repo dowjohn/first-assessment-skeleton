@@ -7,6 +7,7 @@ export const cli = vorpal()
 
 let username
 let server
+let commando
 
 cli
   .delimiter(cli.chalk['yellow']('ftd~$'))
@@ -59,21 +60,32 @@ cli
     })
   })
   .action(function (input, callback) {
-    const [ command, ...rest ] = words(input, /[^, ]+/g)
-    const contents = rest.join(' ')
-    // addressee can be either 'all' or a specific user
+    let [ command, ...rest ] = words(input, /[^, ]+/g)
+    let contents = rest.join(' ')
     if (command === 'disconnect') {
+      commando = command
       server.end(new Message({ username, command }).toJSON() + '\n')
     } else if (command === 'echo') {
+      commando = command
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
     } else if (command === 'broadcast') {
+      commando = command
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
     } else if (command === 'users') {
+      commando = command
       server.write(new Message({ username, command }).toJSON() + '\n')
     } else if (command.startsWith('@')) {
+      commando = command
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
+    } else if (commando === 'echo' ||
+      commando === 'broadcast' ||
+      commando === 'users' ||
+      commando.startsWith('@')) {
+      contents = contents.concat(command)
+      command = commando
+      let messy = new Message({ username, command, contents })
+      server.write(messy.toJSON() + '\n')
     } else {
       this.log(`Command <${command}> was not recognized`)
-    }
-    callback()
+    } callback()
   })

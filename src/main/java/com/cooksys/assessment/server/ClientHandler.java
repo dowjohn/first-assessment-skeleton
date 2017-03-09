@@ -45,7 +45,7 @@ public class ClientHandler implements Runnable {
 
 				switch (message.getCommandPsudo()) {
 					case "connect":
-						log.info("user <{}> connected", message.getUsername());
+						log.info("connect");
 						this.username = message.getUsername();
                         Message connectMessage = new Message();
                         connectMessage.setCommand(message.getCommand());
@@ -56,6 +56,7 @@ public class ClientHandler implements Runnable {
                         }
 						break;
 					case "disconnect":
+					    log.info("disconnect");
                         Set<ClientHandler> myHandlers = this.getServer().getHandlers();
                         if (this.getServer().getHandlers().size() > 0) {
                             for (ClientHandler handler : myHandlers) {
@@ -66,15 +67,18 @@ public class ClientHandler implements Runnable {
 						this.socket.close();
 						break;
 					case "echo":
+					    log.info("echo");
 						messageUser(message);
 						break;
 					case "broadcast":
+					    log.info("broadcast");
                         Set<ClientHandler> momoHandlers = this.getServer().getHandlers();
                         for (ClientHandler handler : momoHandlers) {
                             handler.messageUser(message);
                         }
 						break;
 					case "@":
+					    log.info("whisper");
 						Set<ClientHandler> moreHandlers = this.getServer().getHandlers();
 						for (ClientHandler handler : moreHandlers) {
 						    if (handler.getUsername().equals(message.getUsernamePsudo())) {
@@ -83,6 +87,7 @@ public class ClientHandler implements Runnable {
                         }
 						break;
 					case "users":
+					    log.info("users");
                         Message allUsersList = new Message();
                         StringBuilder builder = new StringBuilder();
                         for (ClientHandler handler : this.getServer().getHandlers()) {
