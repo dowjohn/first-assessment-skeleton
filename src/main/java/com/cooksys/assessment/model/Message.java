@@ -32,7 +32,7 @@ public class Message {
 		this.username = username;
 	}
 
-	public String getUsernamePsudo() {
+	public String getUsernamePseudo() {
 		if (this.command.startsWith("@")) {
 			return command.substring(1);
 		} else {
@@ -48,7 +48,7 @@ public class Message {
 		this.command = command;
 	}
 
-	public String getCommandPsudo() {
+	public String getCommandPseudo() {
 		if (this.command.startsWith("@")) {
 			return "@";
 		} else {

@@ -19,7 +19,7 @@ export class Message {
     })
   }
 
-  getCommandPsudo () {
+  getCommandPseudo () {
     if (this.command.startsWith('@')) {
       return this.command.substring(0, 1)
     } else {
@@ -28,7 +28,7 @@ export class Message {
   }
 
   toString () {
-    switch (this.getCommandPsudo()) {
+    switch (this.getCommandPseudo()) {
       case 'disconnect':
         return (`${this.timeStamp}: <${this.username}> has disconnected`)
       case 'connect':

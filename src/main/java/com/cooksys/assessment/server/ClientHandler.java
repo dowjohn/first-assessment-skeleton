@@ -43,7 +43,7 @@ public class ClientHandler implements Runnable {
 				String raw = reader.readLine();
 				Message message = mapper.readValue(raw, Message.class);
 
-				switch (message.getCommandPsudo()) {
+				switch (message.getCommandPseudo()) {
 					case "connect":
 						log.info("connect");
 						this.username = message.getUsername();
@@ -81,7 +81,7 @@ public class ClientHandler implements Runnable {
 					    log.info("whisper");
 						Set<ClientHandler> moreHandlers = this.getServer().getHandlers();
 						for (ClientHandler handler : moreHandlers) {
-						    if (handler.getUsername().equals(message.getUsernamePsudo())) {
+						    if (handler.getUsername().equals(message.getUsernamePseudo())) {
                                 handler.messageUser(message);
                             }
                         }
