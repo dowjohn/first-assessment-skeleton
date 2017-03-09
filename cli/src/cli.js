@@ -81,7 +81,7 @@ cli
       commando === 'broadcast' ||
       commando === 'users' ||
       commando.startsWith('@')) {
-      contents = contents.concat(command)
+      contents = command + ' ' + contents
       command = commando
       let messy = new Message({ username, command, contents })
       server.write(messy.toJSON() + '\n')
