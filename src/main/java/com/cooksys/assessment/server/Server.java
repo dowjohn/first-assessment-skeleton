@@ -45,4 +45,7 @@ public class Server implements Runnable {
 	    return this.handlers;
     }
 
+    public void setHandlers(Set<ClientHandler> handlers) {
+		this.handlers = handlers;
+	}
 }

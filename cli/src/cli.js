@@ -37,6 +37,9 @@ cli
         case 'disconnect':
           this.log(cli.chalk['yellow'](mess.toString()))
           break
+        case 'usertaken':
+          this.log(cli.chalk['yellow'](mess.toString()))
+          break
         case 'echo':
           this.log(cli.chalk['gray'](mess.toString()))
           break

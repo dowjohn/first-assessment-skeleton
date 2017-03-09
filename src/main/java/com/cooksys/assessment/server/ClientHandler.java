@@ -46,15 +46,23 @@ public class ClientHandler implements Runnable {
 				switch (message.getCommandPseudo()) {
 					case "connect":
 						log.info("connect");
-						this.username = message.getUsername();
-                        Message connectMessage = new Message();
-                        connectMessage.setCommand(message.getCommand());
-                        connectMessage.setUsername(message.getUsername());
-                        connectMessage.setTimeStamp();
-                        for (ClientHandler handler : this.getServer().getHandlers()) {
-                            handler.messageUser(connectMessage);
+						setUsername(message.getUsername());
+						if (userExistCheck(this.getServer().getHandlers(), this.username)) {
+						    Message takenMessage = new Message(this.username, "usertaken", "Sorry but this seat is taken");
+						    messageUser(takenMessage);
+                            this.getServer().getHandlers().remove(this);
+						    socket.close();
+						    break;
+                        } else {
+                            Message connectMessage = new Message();
+                            connectMessage.setCommand(message.getCommand());
+                            connectMessage.setUsername(message.getUsername());
+                            connectMessage.setTimeStamp();
+                            for (ClientHandler handler : this.getServer().getHandlers()) {
+                                handler.messageUser(connectMessage);
+                            }
+                            break;
                         }
-						break;
 					case "disconnect":
 					    log.info("disconnect");
                         Set<ClientHandler> myHandlers = this.getServer().getHandlers();
@@ -124,5 +132,23 @@ public class ClientHandler implements Runnable {
 
     public Server getServer() {
 	    return this.server;
+    }
+
+    public void setServer(Server server) {
+	    this.server = server;
+    }
+
+    public boolean userExistCheck(Set<ClientHandler> set, String usersName) {
+	    boolean doesExist = false;
+	    int quasiCounter = 0;
+	    for (ClientHandler client : set) {
+	        if (client.getUsername().equals(usersName)) {
+	            quasiCounter ++;
+            }
+        }
+        if (quasiCounter > 1) {
+	        doesExist = true;
+        }
+	    return doesExist;
     }
 }

@@ -31,6 +31,8 @@ export class Message {
     switch (this.getCommandPseudo()) {
       case 'disconnect':
         return (`${this.timeStamp}: <${this.username}> has disconnected`)
+      case 'usertaken':
+        return (`${this.timeStamp}: <${this.username}> already exists! Pick something else!`)
       case 'connect':
         return `${this.timeStamp}: <${this.username}> has connected`
       case 'echo':
