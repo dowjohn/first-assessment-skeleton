@@ -2,11 +2,14 @@ package com.cooksys.assessment.model;
 
 import com.sun.istack.internal.Nullable;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Message {
 
 	private String username = "";
 	private String command = "";
-	private String addressee = "";
 	private String contents = "";
 	private String timeStamp = "";
 
@@ -14,12 +17,13 @@ public class Message {
 		// empty constructor for jackson
 	}
 	
-	public Message(String username, String command, String addressee, String contents, String timeStamp) {
+	public Message(String username, String command, String contents, String timeStamp) {
 		this.username = username;
 		this.command = command;
-		this.addressee = addressee;
 		this.contents = contents;
-		this.timeStamp = timeStamp;
+		DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+		Date date = new Date();
+		this.timeStamp = df.format(date);
 	}
 	
 	public String getUsername() {
@@ -30,6 +34,14 @@ public class Message {
 		this.username = username;
 	}
 
+	public String getUsernamePsudo() {
+		if (this.command.startsWith("@")) {
+			return command.substring(1);
+		} else {
+			return getUsername();
+		}
+	}
+
 	public String getCommand() {
 		return command;
 	}
@@ -38,13 +50,13 @@ public class Message {
 		this.command = command;
 	}
 
-    public String getAddressee() {
-        return this.addressee;
-    }
-
-    public void setAddressee(String addressee) {
-        this.addressee = addressee;
-    }
+	public String getCommandPsudo() {
+		if (this.command.startsWith("@")) {
+			return "@";
+		} else {
+			return this.command;
+		}
+	}
 
 	public String getContents() {
 		return contents;

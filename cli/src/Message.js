@@ -7,7 +7,7 @@ export class Message {
     this.username = username
     this.command = command
     this.contents = contents
-    this.timeStamp = new Date().toString()
+    this.timeStamp = ''
   }
 
   toJSON () {
@@ -19,17 +19,25 @@ export class Message {
     })
   }
 
+  getCommandPsudo () {
+    if (this.command.startsWith('@')) {
+      return this.command.substring(0, 1)
+    } else {
+      return this.command
+    }
+  }
+
   toString () {
-    switch (this.command) {
+    switch (this.getCommandPsudo()) {
       case 'disconnect':
-        return (`${this.timeStamp}: <${this.contents}> has disconnected`)
+        return (`${this.timeStamp}: <${this.username}> has disconnected`)
       case 'connect':
-        return `${this.timeStamp}: <${this.contents}> has connected`
+        return `${this.timeStamp}: <${this.username}> has connected`
       case 'echo':
         return `${this.timeStamp} <${this.username}> (echo): ${this.contents}`
       case 'broadcast':
         return `${this.timeStamp} <${this.username}> (broadcast): ${this.contents}`
-      case 'whisper':
+      case '@':
         return `${this.timeStamp} <${this.username}> (whisper): ${this.contents}`
       case 'users':
         return `${this.timeStamp}: currently connected users: ${this.contents}`

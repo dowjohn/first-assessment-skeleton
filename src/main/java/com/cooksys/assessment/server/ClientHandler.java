@@ -43,37 +43,28 @@ public class ClientHandler implements Runnable {
 				String raw = reader.readLine();
 				Message message = mapper.readValue(raw, Message.class);
 
-				switch (message.getCommand()) {
+				switch (message.getCommandPsudo()) {
 					case "connect":
 						log.info("user <{}> connected", message.getUsername());
 						this.username = message.getUsername();
                         Message connectMessage = new Message();
                         connectMessage.setCommand(message.getCommand());
-                        connectMessage.setContents(message.getUsername() + " has connected"  );
+                        connectMessage.setUsername(message.getUsername());
                         for (ClientHandler handler : this.getServer().getHandlers()) {
                             handler.messageUser(connectMessage);
                         }
 						break;
 					case "disconnect":
-						log.info("user <{}> disconnected", message.getUsername());
                         Set<ClientHandler> myHandlers = this.getServer().getHandlers();
-                        Message disconnect = new Message();
-                        disconnect.setCommand("disconnect");
-                        disconnect.setContents(message.getUsername() + " has disconnected"  );
                         if (this.getServer().getHandlers().size() > 0) {
                             for (ClientHandler handler : myHandlers) {
-                                handler.messageUser(disconnect);
+                                handler.messageUser(message);
                             }
                         }
                         this.getServer().getHandlers().remove(this);
 						this.socket.close();
 						break;
 					case "echo":
-						log.info("user <{}> echoed message <{}> timestamp <{}> addressee is <{}>" ,
-                                message.getUsername(),
-                                message.getContents(),
-                                message.getTimeStamp(),
-                                message.getAddressee());
 						String response = mapper.writeValueAsString(message);
 						writer.write(response);
 						writer.flush();
@@ -84,16 +75,11 @@ public class ClientHandler implements Runnable {
                             handler.messageUser(message);
                         }
 						break;
-					case "whisper":
+					case "@":
 						Set<ClientHandler> moreHandlers = this.getServer().getHandlers();
 						for (ClientHandler handler : moreHandlers) {
-						    if (handler.getUsername().equals(message.getAddressee())) {
-						        Message newMessage = new Message(message.getUsername(),
-                                        "whisper",
-                                        "",
-                                        message.getContents(),
-                                        message.getTimeStamp());
-                                handler.messageUser(newMessage);
+						    if (handler.getUsername().equals(message.getUsernamePsudo())) {
+                                handler.messageUser(message);
                             }
                         }
 						break;
@@ -106,10 +92,8 @@ public class ClientHandler implements Runnable {
                             builder.append(handler.getUsername());
                         }
                         allUsersList.setContents(builder.toString());
-                        allUsersList.setAddressee("");
                         allUsersList.setCommand("users");
                         this.messageUser(allUsersList);
-                        log.info(allUsersList.getContents());
 						break;
 				}
 			}
@@ -120,6 +104,7 @@ public class ClientHandler implements Runnable {
 	}
 
 	private void messageUser(Message message) throws JsonProcessingException {
+	    log.info("Got to messageUser");
         String response = mapper.writeValueAsString(message);
         writer.write(response);
         writer.flush();

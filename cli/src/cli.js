@@ -29,7 +29,7 @@ cli
 
     server.on('data', (buffer) => {
       const mess = Message.fromJSON(buffer)
-      switch (mess.command) {
+      switch (mess.getCommandPsudo()) {
         case 'connect':
           this.log(cli.chalk['yellow'](mess.toString()))
           break
@@ -42,17 +42,15 @@ cli
         case 'broadcast':
           this.log(cli.chalk['green'](mess.toString()))
           break
-        case 'whisper':
-          this.log(cli.chalk['purple'](mess.toString()))
+        case '@':
+          this.log(cli.chalk['yellow'](mess.toString()))
           break
         case 'users':
-          this.log(cli.chalk['pink'](mess.toString()))
+          this.log(cli.chalk['red'](mess.toString()))
           break
         default:
-
-      }
-      if (mess.command.includes('echo')) {
-        this.log(cli.chalk['yellow'](mess.toString()))
+          this.log('something went wrong!')
+          break
       }
     })
 
@@ -61,7 +59,7 @@ cli
     })
   })
   .action(function (input, callback) {
-    const [ command, ...rest ] = words(input)
+    const [ command, ...rest ] = words(input, /[^, ]+/g)
     const contents = rest.join(' ')
     // addressee can be either 'all' or a specific user
     if (command === 'disconnect') {
@@ -70,13 +68,13 @@ cli
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
     } else if (command === 'broadcast') {
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
-    } else if (command === 'whisper') {
-      server.write(new Message({ username, command, contents }).toJSON() + '\n')
     } else if (command === 'users') {
+      server.write(new Message({ username, command }).toJSON() + '\n')
+    } else if (command.startsWith('@')) {
+      console.log(command)
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
     } else {
       this.log(`Command <${command}> was not recognized`)
     }
-
     callback()
   })
