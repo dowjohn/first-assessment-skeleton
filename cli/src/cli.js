@@ -38,13 +38,16 @@ cli
           this.log(cli.chalk['yellow'](mess.toString()))
           break
         case 'usertaken':
-          this.log(cli.chalk['yellow'](mess.toString()))
+          this.log(cli.chalk['red'](mess.toString()))
+          break
+        case 'doesnotexist':
+          this.log(cli.chalk['red'](mess.toString()))
           break
         case 'echo':
           this.log(cli.chalk['gray'](mess.toString()))
           break
         case 'broadcast':
-          this.log(cli.chalk['red'](mess.toString()))
+          this.log(cli.chalk['blue'](mess.toString()))
           break
         case '@':
           this.log(cli.chalk['magenta'](mess.toString()))

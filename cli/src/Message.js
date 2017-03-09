@@ -33,6 +33,8 @@ export class Message {
         return (`${this.timestamp}: <${this.username}> has disconnected`)
       case 'usertaken':
         return (`${this.timestamp}: <${this.username}> already exists! Pick something else!`)
+      case 'doesnotexist':
+        return (`${this.timestamp}: <${this.username}> Does not exist! Enter 'users' for a list of current users`)
       case 'connect':
         return `${this.timestamp}: <${this.username}> has connected`
       case 'echo':

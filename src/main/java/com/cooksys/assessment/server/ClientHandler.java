@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sun.deploy.util.SessionState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +77,7 @@ public class ClientHandler implements Runnable {
 						break;
 					case "echo":
 					    log.info("echo");
-						messageUser(message);
+						this.messageUser(message);
 						break;
 					case "broadcast":
 					    log.info("broadcast");
@@ -88,10 +89,19 @@ public class ClientHandler implements Runnable {
 					case "@":
 					    log.info("whisper");
 						Set<ClientHandler> moreHandlers = this.getServer().getHandlers();
+						boolean userExists = false;
+                        ClientHandler addressee = null;
 						for (ClientHandler handler : moreHandlers) {
 						    if (handler.getUsername().equals(message.getUsernamePseudo())) {
-                                handler.messageUser(message);
+						        addressee = handler;
+						        userExists = true;
                             }
+                        }
+                        if (userExists) {
+                            addressee.messageUser(message);
+                        } else {
+						    Message doesNotExist = new Message(message.getCommand().substring(1), "doesnotexist", "user does not exist");
+						    this.messageUser(doesNotExist);
                         }
 						break;
 					case "users":
