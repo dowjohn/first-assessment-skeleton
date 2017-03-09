@@ -3,11 +3,11 @@ export class Message {
     return new Message(JSON.parse(buffer.toString()))
   }
 
-  constructor ({ username, command, contents, timeStamp }) {
+  constructor ({ username, command, contents, timestamp }) {
     this.username = username
     this.command = command
     this.contents = contents
-    this.timeStamp = timeStamp
+    this.timestamp = timestamp
   }
 
   toJSON () {
@@ -15,7 +15,7 @@ export class Message {
       username: this.username,
       command: this.command,
       contents: this.contents,
-      timeStamp: this.timeStamp
+      timestamp: this.timestamp
     })
   }
 
@@ -30,19 +30,19 @@ export class Message {
   toString () {
     switch (this.getCommandPseudo()) {
       case 'disconnect':
-        return (`${this.timeStamp}: <${this.username}> has disconnected`)
+        return (`${this.timestamp}: <${this.username}> has disconnected`)
       case 'usertaken':
-        return (`${this.timeStamp}: <${this.username}> already exists! Pick something else!`)
+        return (`${this.timestamp}: <${this.username}> already exists! Pick something else!`)
       case 'connect':
-        return `${this.timeStamp}: <${this.username}> has connected`
+        return `${this.timestamp}: <${this.username}> has connected`
       case 'echo':
-        return `${this.timeStamp} <${this.username}> (echo): ${this.contents}`
+        return `${this.timestamp} <${this.username}> (echo): ${this.contents}`
       case 'broadcast':
-        return `${this.timeStamp} <${this.username}> (broadcast): ${this.contents}`
+        return `${this.timestamp} <${this.username}> (broadcast): ${this.contents}`
       case '@':
-        return `${this.timeStamp} <${this.username}> (whisper): ${this.contents}`
+        return `${this.timestamp} <${this.username}> (whisper): ${this.contents}`
       case 'users':
-        return `${this.timeStamp}: currently connected users: ${this.contents}`
+        return `${this.timestamp}: currently connected users: ${this.contents}`
       default:
         return `Something went wrong`
     }

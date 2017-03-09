@@ -57,7 +57,7 @@ public class ClientHandler implements Runnable {
                             Message connectMessage = new Message();
                             connectMessage.setCommand(message.getCommand());
                             connectMessage.setUsername(message.getUsername());
-                            connectMessage.setTimeStamp();
+                            connectMessage.setTimestamp();
                             for (ClientHandler handler : this.getServer().getHandlers()) {
                                 handler.messageUser(connectMessage);
                             }
@@ -116,7 +116,7 @@ public class ClientHandler implements Runnable {
 
 	private void messageUser(Message message) throws JsonProcessingException {
 	    log.info("Got to messageUser");
-	    message.setTimeStamp();
+	    message.setTimestamp();
         String response = mapper.writeValueAsString(message);
         writer.write(response);
         writer.flush();

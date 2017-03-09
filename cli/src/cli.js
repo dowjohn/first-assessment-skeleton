@@ -29,7 +29,7 @@ cli
     })
 
     server.on('data', (buffer) => {
-      const mess = Message.fromJSON(buffer)
+      let mess = Message.fromJSON(buffer)
       switch (mess.getCommandPseudo()) {
         case 'connect':
           this.log(cli.chalk['yellow'](mess.toString()))
