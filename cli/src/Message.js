@@ -31,10 +31,6 @@ export class Message {
     switch (this.getCommandPseudo()) {
       case 'disconnect':
         return (`${this.timestamp}: <${this.username}> has disconnected`)
-      case 'usertaken':
-        return (`${this.timestamp}: <${this.username}> already exists! Pick something else!`)
-      case 'doesnotexist':
-        return (`${this.timestamp}: <${this.username}> Does not exist! Enter 'users' for a list of current users`)
       case 'connect':
         return `${this.timestamp}: <${this.username}> has connected`
       case 'echo':
@@ -45,6 +41,10 @@ export class Message {
         return `${this.timestamp} <${this.username}> (whisper): ${this.contents}`
       case 'users':
         return `${this.timestamp}: currently connected users: ${this.contents}`
+      case 'usertaken':
+        return (`${this.timestamp}: <${this.username}> already exists! Pick something else!`)
+      case 'userdoesnotexist':
+        return (`${this.timestamp}: <${this.username}> Does not exist! Enter 'users' for a list of current users`)
       default:
         return `Something went wrong`
     }

@@ -100,7 +100,7 @@ public class ClientHandler implements Runnable {
                         if (userExists) {
                             addressee.messageUser(message);
                         } else {
-						    Message doesNotExist = new Message(message.getCommand().substring(1), "doesnotexist", "user does not exist");
+						    Message doesNotExist = new Message(message.getCommand().substring(1), "userdoesnotexist", "user does not exist");
 						    this.messageUser(doesNotExist);
                         }
 						break;

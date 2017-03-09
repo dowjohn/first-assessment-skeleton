@@ -37,12 +37,6 @@ cli
         case 'disconnect':
           this.log(cli.chalk['yellow'](mess.toString()))
           break
-        case 'usertaken':
-          this.log(cli.chalk['red'](mess.toString()))
-          break
-        case 'doesnotexist':
-          this.log(cli.chalk['red'](mess.toString()))
-          break
         case 'echo':
           this.log(cli.chalk['gray'](mess.toString()))
           break
@@ -54,6 +48,12 @@ cli
           break
         case 'users':
           this.log(cli.chalk['white'](mess.toString()))
+          break
+        case 'usertaken':
+          this.log(cli.chalk['red'](mess.toString()))
+          break
+        case 'userdoesnotexist':
+          this.log(cli.chalk['red'](mess.toString()))
           break
         default:
           this.log('something went wrong!')
