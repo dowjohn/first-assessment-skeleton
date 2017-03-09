@@ -69,7 +69,7 @@ public class Message {
 	}
 
 	public void setTimestamp() {
-		DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+		DateFormat df = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
 		Date date = new Date();
 		this.timestamp = df.format(date).toString();
 		System.out.println(getTimestamp());

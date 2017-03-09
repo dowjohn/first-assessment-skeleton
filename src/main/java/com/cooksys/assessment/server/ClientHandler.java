@@ -35,7 +35,6 @@ public class ClientHandler implements Runnable {
 
 	public void run() {
 		try {
-
 			mapper = new ObjectMapper();
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -43,55 +42,42 @@ public class ClientHandler implements Runnable {
 			while (!socket.isClosed()) {
 				String raw = reader.readLine();
 				Message message = mapper.readValue(raw, Message.class);
+				message.setTimestamp();
+				Set<ClientHandler> clientHandlers = getServer().getHandlers();
 
 				switch (message.getCommandPseudo()) {
 					case "connect":
 						log.info("connect");
-						setUsername(message.getUsername());
-						if (userExistCheck(this.getServer().getHandlers(), this.username)) {
-						    Message takenMessage = new Message(this.username, "usertaken", "Sorry but this seat is taken");
-						    messageUser(takenMessage);
-                            this.getServer().getHandlers().remove(this);
+						this.setUsername(message.getUsername());
+						if (userExistCheck(this.getServer().getHandlers(), this.getUsername())) {
+						    message.setCommand("usertaken");
+						    messageUser(message);
+                            clientHandlers.remove(this);
 						    socket.close();
 						    break;
                         } else {
-                            Message connectMessage = new Message();
-                            connectMessage.setCommand(message.getCommand());
-                            connectMessage.setUsername(message.getUsername());
-                            connectMessage.setTimestamp();
-                            for (ClientHandler handler : this.getServer().getHandlers()) {
-                                handler.messageUser(connectMessage);
-                            }
+                            messageUsersBatch(message, clientHandlers);
                             break;
                         }
 					case "disconnect":
 					    log.info("disconnect");
-                        Set<ClientHandler> myHandlers = this.getServer().getHandlers();
-                        if (this.getServer().getHandlers().size() > 0) {
-                            for (ClientHandler handler : myHandlers) {
-                                handler.messageUser(message);
-                            }
-                        }
-                        this.getServer().getHandlers().remove(this);
-						this.socket.close();
+                        messageUsersBatch(message, clientHandlers);
+                        clientHandlers.remove(this);
+						socket.close();
 						break;
 					case "echo":
 					    log.info("echo");
-						this.messageUser(message);
+						messageUser(message);
 						break;
 					case "broadcast":
 					    log.info("broadcast");
-                        Set<ClientHandler> momoHandlers = this.getServer().getHandlers();
-                        for (ClientHandler handler : momoHandlers) {
-                            handler.messageUser(message);
-                        }
+                        messageUsersBatch(message, clientHandlers);
 						break;
 					case "@":
 					    log.info("whisper");
-						Set<ClientHandler> moreHandlers = this.getServer().getHandlers();
 						boolean userExists = false;
                         ClientHandler addressee = null;
-						for (ClientHandler handler : moreHandlers) {
+						for (ClientHandler handler : clientHandlers) {
 						    if (handler.getUsername().equals(message.getUsernamePseudo())) {
 						        addressee = handler;
 						        userExists = true;
@@ -106,30 +92,31 @@ public class ClientHandler implements Runnable {
 						break;
 					case "users":
 					    log.info("users");
-                        Message allUsersList = new Message();
                         StringBuilder builder = new StringBuilder();
-                        for (ClientHandler handler : this.getServer().getHandlers()) {
+                        for (ClientHandler handler : clientHandlers) {
                             builder.append("\n");
                             builder.append(handler.getUsername());
                         }
-                        allUsersList.setContents(builder.toString());
-                        allUsersList.setCommand("users");
-                        this.messageUser(allUsersList);
+                        message.setContents(builder.toString());
+                        this.messageUser(message);
 						break;
 				}
 			}
-
 		} catch (IOException e) {
 			log.error("Something went wrong :/", e);
 		}
 	}
 
 	private void messageUser(Message message) throws JsonProcessingException {
-	    log.info("Got to messageUser");
-	    message.setTimestamp();
         String response = mapper.writeValueAsString(message);
         writer.write(response);
         writer.flush();
+    }
+
+    private void messageUsersBatch(Message message, Set<ClientHandler> clientHandlers) throws JsonProcessingException {
+        for (ClientHandler handler : clientHandlers) {
+            handler.messageUser(message);
+        }
     }
 
     public String getUsername() {

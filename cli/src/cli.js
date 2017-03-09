@@ -81,16 +81,17 @@ cli
       commando = command
       server.write(new Message({ username, command }).toJSON() + '\n')
     } else if (command.startsWith('@')) {
-      commando = command
       server.write(new Message({ username, command, contents }).toJSON() + '\n')
-    } else if (commando === 'echo' ||
-      commando === 'broadcast' ||
-      commando === 'users' ||
-      commando.startsWith('@')) {
-      contents = command + ' ' + contents
-      command = commando
-      let messy = new Message({ username, command, contents })
-      server.write(messy.toJSON() + '\n')
+    } else if (commando !== undefined) {
+      if (commando === 'echo' ||
+        commando === 'broadcast' ||
+        commando === 'users' ||
+        commando.startsWith('@')) {
+        contents = command + ' ' + contents
+        command = commando
+        let messy = new Message({ username, command, contents })
+        server.write(messy.toJSON() + '\n')
+      }
     } else {
       this.log(`Command <${command}> was not recognized`)
     } callback()

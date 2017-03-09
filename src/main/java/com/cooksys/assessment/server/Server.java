@@ -37,7 +37,7 @@ public class Server implements Runnable {
                 handlers.add(handler);
             }
 		} catch (IOException e) {
-			log.error("Something went wrong :/", e);
+			log.error("Something went wrong in Server.class", e);
 		}
 	}
 
