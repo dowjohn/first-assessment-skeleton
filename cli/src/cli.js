@@ -93,9 +93,13 @@ cli
         let messy = new Message({ username, command, contents })
         server.write(messy.toJSON() + '\n')
       } else {
-        this.log(`Command <${command}> was not recognized`)
+        this.log(
+          `<${command}> not recognized.
+Available commands include 'users', 'disconnect', 'echo', 'broadcast', '@username'`)
       }
     } else {
-      this.log(`Command <${command}> was not recognized`)
+      this.log(
+        `<${command}> not recognized.
+Available commands include 'users', 'disconnect', 'echo', 'broadcast', '@username'`)
     } callback()
   })
