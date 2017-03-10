@@ -29,36 +29,7 @@ cli
     })
 
     server.on('data', (buffer) => {
-      let mess = Message.fromJSON(buffer)
-      switch (mess.getCommandPseudo()) {
-        case 'connect':
-          this.log(cli.chalk['yellow'](mess.toString()))
-          break
-        case 'disconnect':
-          this.log(cli.chalk['yellow'](mess.toString()))
-          break
-        case 'echo':
-          this.log(cli.chalk['gray'](mess.toString()))
-          break
-        case 'broadcast':
-          this.log(cli.chalk['blue'](mess.toString()))
-          break
-        case '@':
-          this.log(cli.chalk['magenta'](mess.toString()))
-          break
-        case 'users':
-          this.log(cli.chalk['white'](mess.toString()))
-          break
-        case 'usertaken':
-          this.log(cli.chalk['red'](mess.toString()))
-          break
-        case 'userdoesnotexist':
-          this.log(cli.chalk['red'](mess.toString()))
-          break
-        default:
-          this.log('something went wrong!')
-          break
-      }
+      this.log(Message.fromJSON(buffer).toString())
     })
 
     server.on('end', () => {
@@ -95,11 +66,11 @@ cli
       } else {
         this.log(
           `<${command}> not recognized.
-Available commands include 'users', 'disconnect', 'echo', 'broadcast', '@username'`)
+Available commands include: 'users', 'disconnect', 'echo', 'broadcast', '@username'`)
       }
     } else {
       this.log(
         `<${command}> not recognized.
-Available commands include 'users', 'disconnect', 'echo', 'broadcast', '@username'`)
+Available commands include: 'users', 'disconnect', 'echo', 'broadcast', '@username'`)
     } callback()
   })

@@ -1,3 +1,6 @@
+import vorpal from 'vorpal'
+export const chalker = vorpal()
+
 export class Message {
   static fromJSON (buffer) {
     return new Message(JSON.parse(buffer.toString()))
@@ -30,21 +33,21 @@ export class Message {
   toString () {
     switch (this.getCommandPseudo()) {
       case 'disconnect':
-        return (`${this.timestamp}: <${this.username}> has disconnected`)
+        return chalker.chalk['yellow'](`${this.timestamp}: <${this.username}> has disconnected`)
       case 'connect':
-        return `${this.timestamp}: <${this.username}> has connected`
+        return chalker.chalk['yellow'](`${this.timestamp}: <${this.username}> has connected`)
       case 'echo':
-        return `${this.timestamp} <${this.username}> (echo): ${this.contents}`
+        return chalker.chalk['gray'](`${this.timestamp} <${this.username}> (echo): ${this.contents}`)
       case 'broadcast':
-        return `${this.timestamp} <${this.username}> (broadcast): ${this.contents}`
+        return chalker.chalk['blue'](`${this.timestamp} <${this.username}> (broadcast): ${this.contents}`)
       case '@':
-        return `${this.timestamp} <${this.username}> (whisper): ${this.contents}`
+        return chalker.chalk['magenta'](`${this.timestamp} <${this.username}> (whisper): ${this.contents}`)
       case 'users':
-        return `${this.timestamp}: currently connected users: ${this.contents}`
+        return chalker.chalk['white'](`${this.timestamp}: currently connected users: ${this.contents}`)
       case 'usertaken':
-        return (`${this.timestamp}: <${this.username}> already exists! Pick something else!`)
+        return chalker.chalk['red'](`${this.timestamp}: <${this.username}> already exists! Pick something else!`)
       case 'userdoesnotexist':
-        return (`${this.timestamp}: <${this.username}> Does not exist! Enter 'users' for a list of current users`)
+        return chalker.chalk['red'](`${this.timestamp}: <${this.username}> Does not exist! Enter 'users' for a list of current users`)
       default:
         return `Something went wrong`
     }
