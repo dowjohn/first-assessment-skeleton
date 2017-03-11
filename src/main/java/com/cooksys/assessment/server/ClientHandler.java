@@ -44,7 +44,7 @@ public class ClientHandler implements Runnable {
 						    socket.close();
 						    break;
                         } else {
-						    server.getHandlers().put(message.getUsername(), this);
+						    server.addStringClientHandler(message.getUsername(), this);
                             server.messageAllUsers(server.getHandlers(), message);
                             break;
                         }
