@@ -1,21 +1,14 @@
 package com.cooksys.assessment.server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.HashSet;
-import java.util.Set;
-
+import com.cooksys.assessment.model.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sun.deploy.util.SessionState;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cooksys.assessment.model.Message;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.*;
+import java.net.Socket;
+import java.util.Set;
 
 public class ClientHandler implements Runnable {
 	private Logger log = LoggerFactory.getLogger(ClientHandler.class);
@@ -42,7 +35,7 @@ public class ClientHandler implements Runnable {
 			while (!socket.isClosed()) {
 				String raw = reader.readLine();
 				Message message = mapper.readValue(raw, Message.class);
-				message.setTimestamp();
+				message.setTimestamp(Message.generateTimestamp());
 				Set<ClientHandler> clientHandlers = getServer().getHandlers();
 
 				switch (message.getCommandPseudo()) {

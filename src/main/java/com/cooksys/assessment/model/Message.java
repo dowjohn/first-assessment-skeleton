@@ -1,7 +1,5 @@
 package com.cooksys.assessment.model;
 
-import com.sun.istack.internal.Nullable;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,7 +19,6 @@ public class Message {
 		this.username = username;
 		this.command = command;
 		this.contents = contents;
-		setTimestamp();
 	}
 	
 	public String getUsername() {
@@ -68,10 +65,13 @@ public class Message {
 		return timestamp;
 	}
 
-	public void setTimestamp() {
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public static String generateTimestamp() {
 		DateFormat df = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
 		Date date = new Date();
-		this.timestamp = df.format(date).toString();
-		System.out.println(getTimestamp());
+		return df.format(date).toString();
 	}
 }

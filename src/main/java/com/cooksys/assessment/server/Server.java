@@ -1,24 +1,23 @@
 package com.cooksys.assessment.server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Server implements Runnable {
 	private Logger log = LoggerFactory.getLogger(Server.class);
 	
 	private int port;
 	private ExecutorService executor;
-	private Set<ClientHandler> handlers = new HashSet<>();
-	
+	private Set<ClientHandler> handlers = Collections.synchronizedSet(new HashSet<>());
+
 	public Server(int port, ExecutorService executor) {
 		super();
 		this.port = port;
@@ -41,7 +40,7 @@ public class Server implements Runnable {
 		}
 	}
 
-	public Set<ClientHandler> getHandlers() {
+	public synchronized Set<ClientHandler> getHandlers() {
 	    return this.handlers;
     }
 
