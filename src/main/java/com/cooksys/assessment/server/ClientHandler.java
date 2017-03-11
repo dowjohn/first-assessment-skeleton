@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Set;
 
 public class ClientHandler implements Runnable {
 	private Logger log = LoggerFactory.getLogger(ClientHandler.class);
@@ -17,7 +16,6 @@ public class ClientHandler implements Runnable {
 	private ObjectMapper mapper = null;
 	private BufferedReader reader = null;
 	private PrintWriter writer = null;
-	private String username = null;
 	private Server server;
 
 	public ClientHandler(Socket socket, Server server) {
@@ -36,26 +34,24 @@ public class ClientHandler implements Runnable {
 				String raw = reader.readLine();
 				Message message = mapper.readValue(raw, Message.class);
 				message.setTimestamp(Message.generateTimestamp());
-				Set<ClientHandler> clientHandlers = getServer().getHandlers();
 
 				switch (message.getCommandPseudo()) {
 					case "connect":
 						log.info("connect");
-						this.setUsername(message.getUsername());
-						if (userExistCheck(this.getServer().getHandlers(), this.getUsername())) {
+						if (server.getHandlers().containsKey(message.getUsername())) {
 						    message.setCommand("usertaken");
 						    messageUser(message);
-                            clientHandlers.remove(this);
 						    socket.close();
 						    break;
                         } else {
-                            messageUsersBatch(message, clientHandlers);
+						    server.getHandlers().put(message.getUsername(), this);
+                            server.messageAllUsers(server.getHandlers(), message);
                             break;
                         }
 					case "disconnect":
 					    log.info("disconnect");
-                        messageUsersBatch(message, clientHandlers);
-                        clientHandlers.remove(this);
+                        server.messageAllUsers(server.getHandlers(), message);
+                        server.getHandlers().remove(message.getUsername());
 						socket.close();
 						break;
 					case "echo":
@@ -64,34 +60,30 @@ public class ClientHandler implements Runnable {
 						break;
 					case "broadcast":
 					    log.info("broadcast");
-                        messageUsersBatch(message, clientHandlers);
+                        server.messageAllUsers(server.getHandlers(), message);
 						break;
 					case "@":
 					    log.info("whisper");
-						boolean userExists = false;
-                        ClientHandler addressee = null;
-						for (ClientHandler handler : clientHandlers) {
-						    if (handler.getUsername().equals(message.getUsernamePseudo())) {
-						        addressee = handler;
-						        userExists = true;
-                            }
+                        if (server.getHandlers().containsKey(message.getUsernamePseudo())) {
+                            log.info("User DOES exist!");
+                            server.getHandlers().get(message.getUsernamePseudo()).messageUser(message);
+						} else {
+                            Message doesNotExist = new Message(message.getCommand().substring(1), "userdoesnotexist", "user does not exist");
+                            doesNotExist.setTimestamp(Message.generateTimestamp());
+                            this.messageUser(doesNotExist);
                         }
-                        if (userExists) {
-                            addressee.messageUser(message);
-                        } else {
-						    Message doesNotExist = new Message(message.getCommand().substring(1), "userdoesnotexist", "user does not exist");
-						    this.messageUser(doesNotExist);
-                        }
+
+
 						break;
 					case "users":
 					    log.info("users");
                         StringBuilder builder = new StringBuilder();
-                        for (ClientHandler handler : clientHandlers) {
+                        for (String username : server.getHandlers().keySet()) {
                             builder.append("\n");
-                            builder.append(handler.getUsername());
+                            builder.append(username);
                         }
                         message.setContents(builder.toString());
-                        this.messageUser(message);
+                        messageUser(message);
 						break;
 				}
 			}
@@ -100,24 +92,10 @@ public class ClientHandler implements Runnable {
 		}
 	}
 
-	private void messageUser(Message message) throws JsonProcessingException {
+	public void messageUser(Message message) throws JsonProcessingException {
         String response = mapper.writeValueAsString(message);
         writer.write(response);
         writer.flush();
-    }
-
-    private void messageUsersBatch(Message message, Set<ClientHandler> clientHandlers) throws JsonProcessingException {
-        for (ClientHandler handler : clientHandlers) {
-            handler.messageUser(message);
-        }
-    }
-
-    public String getUsername() {
-	    return this.username;
-    }
-
-    public void setUsername(String username) {
-	    this.username = username;
     }
 
     public Server getServer() {
@@ -126,19 +104,5 @@ public class ClientHandler implements Runnable {
 
     public void setServer(Server server) {
 	    this.server = server;
-    }
-
-    public boolean userExistCheck(Set<ClientHandler> set, String usersName) {
-	    boolean doesExist = false;
-	    int quasiCounter = 0;
-	    for (ClientHandler client : set) {
-	        if (client.getUsername().equals(usersName)) {
-	            quasiCounter ++;
-            }
-        }
-        if (quasiCounter > 1) {
-	        doesExist = true;
-        }
-	    return doesExist;
     }
 }
