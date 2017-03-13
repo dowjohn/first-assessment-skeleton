@@ -16,12 +16,12 @@ public class ClientHandler implements Runnable {
 	private ObjectMapper mapper = null;
 	private BufferedReader reader = null;
 	private PrintWriter writer = null;
-	private Server server;
+	private MessageManager manager;
 
-	public ClientHandler(Socket socket, Server server) {
+	public ClientHandler(Socket socket, MessageManager manager) {
 		super();
 		this.socket = socket;
-		this.server = server;
+		this.manager = manager;
 	}
 
 	public void run() {
@@ -38,20 +38,20 @@ public class ClientHandler implements Runnable {
 				switch (message.getCommandPseudo()) {
 					case "connect":
 						log.info("connect");
-						if (server.getHandlers().containsKey(message.getUsername())) {
+						if (manager.getHandlers().containsKey(message.getUsername())) {
 						    message.setCommand("usertaken");
 						    messageUser(message);
 						    socket.close();
 						    break;
                         } else {
-						    server.addStringClientHandler(message.getUsername(), this);
-                            server.messageAllUsers(server.getHandlers(), message);
+						    manager.addStringClientHandler(message.getUsername(), this);
+                            manager.messageAllUsers(manager.getHandlers(), message);
                             break;
                         }
 					case "disconnect":
 					    log.info("disconnect");
-                        server.messageAllUsers(server.getHandlers(), message);
-                        server.getHandlers().remove(message.getUsername());
+                        manager.messageAllUsers(manager.getHandlers(), message);
+                        manager.getHandlers().remove(message.getUsername());
 						socket.close();
 						break;
 					case "echo":
@@ -60,13 +60,13 @@ public class ClientHandler implements Runnable {
 						break;
 					case "broadcast":
 					    log.info("broadcast");
-                        server.messageAllUsers(server.getHandlers(), message);
+                        manager.messageAllUsers(manager.getHandlers(), message);
 						break;
 					case "@":
 					    log.info("whisper");
-                        if (server.getHandlers().containsKey(message.getUsernamePseudo())) {
+                        if (manager.getHandlers().containsKey(message.getUsernamePseudo())) {
                             log.info("User DOES exist!");
-                            server.getHandlers().get(message.getUsernamePseudo()).messageUser(message);
+                            manager.getHandlers().get(message.getUsernamePseudo()).messageUser(message);
 						} else {
                             Message doesNotExist = new Message(message.getCommand().substring(1), "userdoesnotexist", "user does not exist");
                             doesNotExist.setTimestamp(Message.generateTimestamp());
@@ -78,7 +78,7 @@ public class ClientHandler implements Runnable {
 					case "users":
 					    log.info("users");
                         StringBuilder builder = new StringBuilder();
-                        for (String username : server.getHandlers().keySet()) {
+                        for (String username : manager.getHandlers().keySet()) {
                             builder.append("\n");
                             builder.append(username);
                         }
@@ -98,11 +98,11 @@ public class ClientHandler implements Runnable {
         writer.flush();
     }
 
-    public Server getServer() {
-	    return this.server;
+    public MessageManager getMessageManager() {
+	    return this.manager;
     }
 
-    public void setServer(Server server) {
-	    this.server = server;
+    public void setMessageManager(MessageManager manager) {
+	    this.manager = manager;
     }
 }
