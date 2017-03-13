@@ -18,7 +18,6 @@ public class Server implements Runnable {
 	
 	private int port;
 	private ExecutorService executor;
-	private Map<String, ClientHandler> sink = new HashMap<>();
 	private Map<String, ClientHandler> handlers = Collections.synchronizedMap(new HashMap());
 
 	public Server(int port, ExecutorService executor) {
