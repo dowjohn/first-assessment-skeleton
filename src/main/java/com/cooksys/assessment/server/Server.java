@@ -15,10 +15,10 @@ import java.util.concurrent.ExecutorService;
 
 public class Server implements Runnable {
 	private Logger log = LoggerFactory.getLogger(Server.class);
-	
+
 	private int port;
 	private ExecutorService executor;
-	private Map<String, ClientHandler> handlers = Collections.synchronizedMap(new HashMap());
+	private Map<String, ClientHandler> handlers = Collections.synchronizedMap(new HashMap<>());
 
 	public Server(int port, ExecutorService executor) {
 		super();
